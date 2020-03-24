@@ -137,6 +137,22 @@ namespace learn {
                 }
             }
 
+            void reverse() override {
+                if (empty())
+                    return;
+                
+                auto ptr = head;
+                auto next_ptr = ptr->next;
+                while (true) {
+                    std::swap(ptr->prev, ptr->next);
+                    ptr = next_ptr;
+                    if (!ptr)
+                        break;
+                    next_ptr = ptr->next;
+                }
+                std::swap(head, tail);
+            }
+
             T at(size_t position) const override {
                 auto ptr = head;
                 size_t index = 0;

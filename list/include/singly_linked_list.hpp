@@ -129,6 +129,21 @@ namespace learn {
                 }
             }
 
+            void reverse() override {
+                if (empty())
+                    return;
+
+                // Написал без заморочек
+                auto ptr = head;
+                singly_linked_list<T> new_list;
+                while (ptr != nullptr) {
+                    new_list.push_front(ptr->data);
+                    ptr = ptr->next;
+                }
+
+                *this = new_list;
+            }
+
             T at(size_t position) const override {
                 auto ptr = head;
                 size_t index = 0;

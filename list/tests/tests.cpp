@@ -195,6 +195,30 @@ TYPED_TEST_P(list_test, get_front_and_back) {
 	ASSERT_EQ(list.back(), 2);
 }
 
+TYPED_TEST_P(list_test, reverse_2_items) {
+	// Arrange
+	TypeParam list { 0, 1 };
+	TypeParam expected_list { 1, 0 };
+
+	// Act
+	list.reverse();
+
+	// Assert
+	check_lists_eq(&list, &expected_list);
+}
+
+TYPED_TEST_P(list_test, reverse_items) {
+	// Arrange
+	TypeParam list { 0, 1, 2, 3, 4 };
+	TypeParam expected_list { 4, 3, 2, 1, 0 };
+
+	// Act
+	list.reverse();
+
+	// Assert
+	check_lists_eq(&list, &expected_list);
+}
+
 TYPED_TEST_P(list_test, item_at_correct_position) {
 	// Arrange
 	TypeParam list;
@@ -224,7 +248,7 @@ TYPED_TEST_P(list_test, item_at_incorrect_position) {
 REGISTER_TYPED_TEST_CASE_P(
 	list_test,
 	empty_on_startup,
-    count_not_empty,
+	count_not_empty,
 	push_back_2_items,
 	push_front_2_items,
 	pop_front,
@@ -237,6 +261,8 @@ REGISTER_TYPED_TEST_CASE_P(
 	insert_end,
 	insert_incorrect,
 	get_front_and_back,
+	reverse_2_items,
+	reverse_items,
 	item_at_correct_position,
 	item_at_incorrect_position
 );

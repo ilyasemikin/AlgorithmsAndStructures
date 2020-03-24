@@ -38,6 +38,8 @@ namespace learn {
 
             virtual T at(size_t) const = 0;
 
+            virtual void reverse() = 0;
+
             virtual size_t count() const = 0;
             virtual bool empty() const = 0; 
     };

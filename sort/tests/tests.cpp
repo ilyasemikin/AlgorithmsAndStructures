@@ -3,6 +3,8 @@
 #include <functional>
 #include "sort_method.hpp"
 #include "insertion_sort.hpp"
+#include "bubble_sort.hpp"
+#include "selection_sort.hpp"
 
 using func_sort = std::function<void(int *, size_t, learn::sort_order)>;
 
@@ -46,7 +48,9 @@ INSTANTIATE_TEST_CASE_P(
     instantiation_sort_test, 
     sort_test, 
     testing::Values(
-        FUNC_SORT_PAIR("insertion", learn::insertion_sort<int>)
+        FUNC_SORT_PAIR("insertion",     learn::insertion_sort<int>),
+        FUNC_SORT_PAIR("bubble",        learn::bubble_sort<int>),
+        FUNC_SORT_PAIR("selection",     learn::selection_sort<int>)
     )
 );
 

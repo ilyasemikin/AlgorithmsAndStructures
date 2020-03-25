@@ -11,10 +11,11 @@ namespace learn {
     class stack : public stack_base<T> {
         public:
             stack() {
-
+                static_assert(std::is_base_of<learn::list<T>, Tlist>(), "Tlist must be inherited from list");
             }
 
             stack(const std::initializer_list<T> init_list) {
+                static_assert(std::is_base_of<learn::list<T>, Tlist>(), "Tlist must be inherited from list");
                 std::for_each(init_list.begin(), init_list.end(), [this](const auto &x) { list.push_back(x); } );
             }
 

@@ -130,16 +130,6 @@ namespace learn {
             const std::vector<T> &operator[](size_t i) const {
                 return data[i];
             }
-
-            template <typename Titem>
-            friend bool operator==(const matrix<Titem> &, const matrix<Titem> &);
-            template <typename Titem>
-            friend bool operator!=(const matrix<Titem> &, const matrix<Titem> &);
-            template <typename Titem>
-            friend std::ostream &operator<<(std::ostream &, const matrix<Titem> &);
-
-            friend class line;
-
         private:
             size_t m;
             size_t n;
@@ -150,12 +140,12 @@ namespace learn {
     
     template <typename Titem>
     bool operator==(const matrix<Titem> &lvl, const matrix<Titem> &rvl) {
-        if (lvl.m != rvl.m || lvl.n != rvl.n)
+        if (lvl.get_m() != rvl.get_m() || lvl.get_n() != rvl.get_n())
             return false;
         auto [m, n] = rvl.get_size();
         for (size_t i = 0; i < m; i++)
             for (size_t j = 0; j < n; j++)
-                if (lvl.data[i][j] != rvl[i][j])
+                if (lvl[i][j] != rvl[i][j])
                     return false;
         return true;
     }
@@ -167,11 +157,35 @@ namespace learn {
 
     template <typename T>
     std::ostream &operator<<(std::ostream &os, const matrix<T> &mx) {
-        for (size_t i = 0; i < mx.m; i++) {
-            for(size_t j = 0; j < mx.n; j++)
+        for (size_t i = 0; i < mx.get_m(); i++) {
+            for(size_t j = 0; j < mx.get_n(); j++)
                 os << mx[i][j] << ' ';
             os << std::endl;
         }
         return os;
+    }
+
+    // Вычисление произведения матриц по определнию
+    template <typename T>
+    matrix<T> math_multiplication(const matrix<T> &lvl, const matrix<T> &rvl) {
+        if (lvl.get_n() == rvl.get_m())
+            throw matrix_not_exist("");
+
+        auto ret_m = lvl.get_n();
+        auto ret_n = rvl.get_m();
+
+        matrix<T> ret(ret_m, ret_n);
+
+        T item;
+
+        for (size_t i = 0; i < ret_m; i++)
+            for (size_t j = 0; j < ret_n; j++) {
+                item = 0;
+                for (size_t k = 0; k < ret_m; k++) 
+                    item += lvl[i, k] * rvl[k * j];
+                ret[i, j] = item;
+            }
+        
+        return ret;
     }
 }

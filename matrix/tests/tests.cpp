@@ -60,7 +60,7 @@ TEST(matrix_test, size) {
     ASSERT_FALSE(mx.is_square());
 }
 
-TEST(matrix_test, transporent_square) {
+TEST(matrix_test, transpose_square) {
     // Arrange
     learn::matrix<int> mx {
         { 0, 1, 2 },
@@ -80,7 +80,7 @@ TEST(matrix_test, transporent_square) {
     ASSERT_EQ(mx.transpose(), expected_mx);
 }
 
-TEST(matrix_test, transporent_non_square) {
+TEST(matrix_test, transpose_non_square) {
     // Arrange
     learn::matrix<int> mx {
         { 0, 1, 2, 3 },

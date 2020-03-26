@@ -15,7 +15,7 @@ namespace learn {
             }
         };
 
-    template <typename T, typename Tdet = T>
+    template <typename T>
     class matrix {
         public:
             explicit matrix(size_t m, size_t n, T value = T()) : 
@@ -85,18 +85,66 @@ namespace learn {
                 return ret;
             }
 
+            template <typename Tdet = T>
             Tdet determinant() const {
                 if (!is_square())
                     throw std::logic_error("");
 
-                // TODO: реализовать
+                auto mx = *this;
+                for (size_t i = 0; i < m; i++) {
+                    
+                }
+
                 return 0;
+            }
+
+            // Выглядит хреново, но пока сделал так, как знал
+            // TODO: переделать
+            // Как идея, изменить представление data
+            class line {
+                public:
+                    line(T *first) : items(first) {
+                        
+                    }
+
+                    T &operator[](size_t j) {
+                        return items[j]; 
+                    }
+                private:
+                    T *items;
+            };
+
+            class const_line {
+                public:
+                    const_line(const T *first) : items(first) {
+                        
+                    }
+
+                    const T &operator[](size_t j) const {
+                        return items[j]; 
+                    }
+                private:
+                    const T *items;
+            };
+
+            // Не проверяет границы
+            // Для индексации с проверкой использовать функцию at
+            line operator[](size_t i) {
+                return line(&data[i * n]);
+            }
+
+            const_line operator[](size_t i) const {
+                return const_line(&data[i * n]);
             }
 
             template <typename Titem>
             friend bool operator==(const matrix<Titem> &, const matrix<Titem> &);
             template <typename Titem>
             friend bool operator!=(const matrix<Titem> &, const matrix<Titem> &);
+            template <typename Titem>
+            friend std::ostream &operator<<(std::ostream &, const matrix<Titem> &);
+
+            friend class line;
 
         private:
             size_t m;
@@ -124,5 +172,15 @@ namespace learn {
     template <typename T>
     bool operator!=(const matrix<T> &lvl, const matrix<T> &rvl) {
         return !(lvl == rvl);
+    }
+
+    template <typename T>
+    std::ostream &operator<<(std::ostream &os, const matrix<T> &mx) {
+        for (size_t i = 0; i < mx.m; i++) {
+            for(size_t j = 0; j < mx.n; j++)
+                os << mx[i][j] << ' ';
+            os << std::endl;
+        }
+        return os;
     }
 }

@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <vector>
 
+#include <iostream>
+
 namespace learn {
     class matrix_not_exist : public std::logic_error {
         public:
@@ -19,7 +21,7 @@ namespace learn {
     class matrix {
         public:
             explicit matrix(size_t m, size_t n, T value = T()) : 
-                m(m), n(n), data(m * n, value) 
+                m(m), n(n), data(m, std::vector<T>(n, value))
             {
                 if (!m || !n)
                     throw std::invalid_argument("size must be non zero");
@@ -31,9 +33,10 @@ namespace learn {
 
                 m = 1;
                 n = list.size();
-                data.resize(m * n);
+                data.resize(m);
+                data[0].resize(n);
 
-                std::copy(list.begin(), list.end(), data.begin());
+                std::copy(list.begin(), list.end(), data[0].begin());
             }
 
             matrix(const std::initializer_list<std::vector<T>> &list) {
@@ -46,13 +49,8 @@ namespace learn {
                 m = list.size();
                 n = list.begin()->size();
 
-                // Возможно, в дальнейшем переделаю
-                for (auto line : list) {
-                    if (line.size() != n)
-                        throw std::invalid_argument("count items in lines must be equal");
-                    // Через back_inserter - так себе идея
-                    std::copy(line.begin(), line.end(), std::back_inserter(data));
-                }
+                data.resize(m);
+                std::copy(list.begin(), list.end(), data.begin());
             }
 
             inline size_t get_m() const {
@@ -68,20 +66,42 @@ namespace learn {
             }
 
             T at(size_t i, size_t j) const {
-                if (i >= m || j >= n)
-                    throw std::invalid_argument("invalid index");
-                return data[get_index(i, j)];
+                return data[i][j];
             }
 
             inline bool is_square() const {
                 return m == n;
             }
 
+            matrix<T> minor(size_t line, size_t column) const {
+                if (m == 1 || n == 1)
+                    throw matrix_not_exist("");
+
+                matrix<T> ret(m - 1, n - 1);
+                size_t ret_i, ret_j;
+                ret_i = 0;
+
+                for (size_t i = 0; i < m; i++) {
+                    if (i == line)
+                        continue;
+                    ret_j = 0;
+                    for (size_t j = 0; j < n; j++) {
+                        if (j == column)
+                            continue;
+                        ret[ret_i][ret_j] = data[i][j];
+                        ret_j++;
+                    }
+                    ret_i++;
+                }
+
+                return ret;
+            }
+
             matrix<T> transpose() const {
                 matrix<T> ret(n, m);
                 for (size_t i = 0; i < m; i++)
                     for (size_t j = 0; j < n; j++)
-                        ret.data[ret.get_index(j, i)] = data[get_index(i, j)];
+                        ret.data[j][i] = data[i][j];
                 return ret;
             }
 
@@ -90,51 +110,25 @@ namespace learn {
                 if (!is_square())
                     throw std::logic_error("");
 
-                auto mx = *this;
-                for (size_t i = 0; i < m; i++) {
-                    
-                }
-
-                return 0;
+                if (m == 1)
+                    return data[0][0];
+                if (m == 2)
+                    return data[0][0] * data[1][1] - data[0][1] * data[1][0];
+                
+                Tdet ret = Tdet();
+                for (size_t j = 0; j < n; j++)
+                    ret += (!(j % 2) ? 1 : -1) * data[0][j] * minor(0, j).determinant();
+                return ret;
             }
-
-            // Выглядит хреново, но пока сделал так, как знал
-            // TODO: переделать
-            // Как идея, изменить представление data
-            class line {
-                public:
-                    line(T *first) : items(first) {
-                        
-                    }
-
-                    T &operator[](size_t j) {
-                        return items[j]; 
-                    }
-                private:
-                    T *items;
-            };
-
-            class const_line {
-                public:
-                    const_line(const T *first) : items(first) {
-                        
-                    }
-
-                    const T &operator[](size_t j) const {
-                        return items[j]; 
-                    }
-                private:
-                    const T *items;
-            };
 
             // Не проверяет границы
             // Для индексации с проверкой использовать функцию at
-            line operator[](size_t i) {
-                return line(&data[i * n]);
+            std::vector<T> &operator[](size_t i) {
+                return data[i];
             }
 
-            const_line operator[](size_t i) const {
-                return const_line(&data[i * n]);
+            const std::vector<T> &operator[](size_t i) const {
+                return data[i];
             }
 
             template <typename Titem>
@@ -150,11 +144,8 @@ namespace learn {
             size_t m;
             size_t n;
 
-            std::vector<T> data;
-
-            inline size_t get_index(size_t i, size_t j) const {
-                return i * n + j;
-            }
+            // В дальнейшем подробнее изучить вопрос и рассмотреть альтернативы к предсталению матрицы
+            std::vector<std::vector<T>> data;
     };
     
     template <typename Titem>
@@ -164,7 +155,7 @@ namespace learn {
         auto [m, n] = rvl.get_size();
         for (size_t i = 0; i < m; i++)
             for (size_t j = 0; j < n; j++)
-                if (lvl.data[i * n + j] != rvl.data[i * n + j])
+                if (lvl.data[i][j] != rvl[i][j])
                     return false;
         return true;
     }

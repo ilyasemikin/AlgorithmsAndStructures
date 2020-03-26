@@ -77,6 +77,8 @@ TEST(matrix_test, transpose_square) {
     // nothing
 
     // Assert
+    ASSERT_EQ(mx.get_m(), expected_mx.get_m());
+    ASSERT_EQ(mx.get_n(), expected_mx.get_n());
     ASSERT_EQ(mx.transpose(), expected_mx);
 }
 
@@ -98,7 +100,57 @@ TEST(matrix_test, transpose_non_square) {
     // nothing
 
     // Assert
+    ASSERT_EQ(mx.get_m(), expected_mx.get_n());
+    ASSERT_EQ(mx.get_n(), expected_mx.get_m());
     ASSERT_EQ(mx.transpose(), expected_mx);
+}
+
+TEST(matrix_test, minor) {
+    // Arrange
+    learn::matrix<int> mx {
+        { 0, 1, 2 },
+        { 3, 4, 5 },
+        { 6, 7, 8 }
+    };
+    learn::matrix<int> expect_mx_1 {
+        { 4, 5 },
+        { 7, 8 }
+    };
+    learn::matrix<int> expect_mx_2 {
+        { 3, 5 },
+        { 6, 8 }
+    };
+    learn::matrix<int> expect_mx_3 {
+        { 0, 2 },
+        { 6, 8 }
+    };
+
+    // Act
+    // nothing
+
+    // Assert
+    ASSERT_EQ(mx.minor(0, 0), expect_mx_1);
+    ASSERT_EQ(mx.minor(0, 1), expect_mx_2);
+    ASSERT_EQ(mx.minor(1, 1), expect_mx_3);
+}
+
+TEST(matrix_test, equality) {
+    // Arrange
+    learn::matrix<int> mx {
+        { 0, 1, 2 },
+        { 3, 4, 5 }
+    };
+    learn::matrix<int> expected_mx {
+        { 0, 1, 2 },
+        { 3, 4, 5 }
+    };
+
+    // Act
+    // nothing
+
+    // Assert
+    ASSERT_TRUE(mx == expected_mx);
+    ASSERT_FALSE(mx != expected_mx);
 }
 
 /*

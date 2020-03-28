@@ -27,19 +27,7 @@ namespace learn {
                     throw std::invalid_argument("size must be non zero");
             }
 
-            matrix(const std::initializer_list<T> &list) {
-                if (!list.size())
-                    throw std::invalid_argument("size must be non zero");
-
-                m = 1;
-                n = list.size();
-                data.resize(m);
-                data[0].resize(n);
-
-                std::copy(list.begin(), list.end(), data[0].begin());
-            }
-
-            matrix(const std::initializer_list<std::vector<T>> &list) {
+            matrix(const std::initializer_list<std::initializer_list<T>> &list) {
                 if (!list.size())
                     throw std::invalid_argument("count lines must be non zero");
                 
@@ -157,35 +145,35 @@ namespace learn {
 
     template <typename T>
     std::ostream &operator<<(std::ostream &os, const matrix<T> &mx) {
-        for (size_t i = 0; i < mx.get_m(); i++) {
-            for(size_t j = 0; j < mx.get_n(); j++)
+        auto [m, n] = mx.get_size();
+        
+        os << "{ ";
+        for (size_t i = 0; i < m; i++) {
+            os << "{ ";
+            for (size_t j = 0; j < n; j++)
                 os << mx[i][j] << ' ';
-            os << std::endl;
+            os << "} ";
         }
+        os << "}";
         return os;
     }
 
-    // Вычисление произведения матриц по определнию
-    template <typename T>
-    matrix<T> math_multiplication(const matrix<T> &lvl, const matrix<T> &rvl) {
-        if (lvl.get_n() == rvl.get_m())
-            throw matrix_not_exist("");
+    namespace matrix_operations {
+        // Вычисление произведения матриц по определнию
+        template <typename T>
+        matrix<T> math_multiplication(const matrix<T> &lvl, const matrix<T> &rvl) {
+            if (lvl.get_n() != rvl.get_m())
+                throw matrix_not_exist("");
 
-        auto ret_m = lvl.get_n();
-        auto ret_n = rvl.get_m();
 
-        matrix<T> ret(ret_m, ret_n);
+            matrix<T> ret(lvl.get_m(), rvl.get_n(), 0);
 
-        T item;
+            for (size_t i = 0; i < lvl.get_m(); i++)
+                for (size_t j = 0; j < rvl.get_n(); j++)
+                    for (size_t k = 0; k < lvl.get_n(); k++)
+                        ret[i][j] += lvl[i][k] * rvl[k][j];
 
-        for (size_t i = 0; i < ret_m; i++)
-            for (size_t j = 0; j < ret_n; j++) {
-                item = 0;
-                for (size_t k = 0; k < ret_m; k++) 
-                    item += lvl[i, k] * rvl[k * j];
-                ret[i, j] = item;
-            }
-        
-        return ret;
+            return ret;
+        }
     }
 }

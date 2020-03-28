@@ -6,7 +6,7 @@
 TEST(matrix_test, one_line_initializer_list_construct) {
     // Arrange
     std::vector<int> expected_items { 0, 1, 2, 3 };
-    learn::matrix<int> mx { 0, 1, 2, 3 };
+    learn::matrix<int> mx { { 0, 1, 2, 3 } };
 
     // Act
     // nothing
@@ -16,6 +16,21 @@ TEST(matrix_test, one_line_initializer_list_construct) {
     ASSERT_EQ(mx.get_n(), expected_items.size());
     for (size_t j = 0; j < expected_items.size(); j++)
         ASSERT_EQ(mx.at(0, j), expected_items[j]);
+}
+
+TEST(matrix_test, one_column_initializer_list_construct) {
+    // Arrange
+    std::vector<int> expected_items { 0, 1, 2, 3 };
+    learn::matrix<int> mx { { 0 }, { 1 }, { 2 }, { 3 } };
+
+    // Act
+    // nothing
+
+    // Assert
+    ASSERT_EQ(mx.get_m(), expected_items.size());
+    ASSERT_EQ(mx.get_n(), 1);
+    for (size_t i = 0; i < expected_items.size(); i++)
+        ASSERT_EQ(mx.at(i, 0), expected_items[i]);
 }
 
 TEST(matrix_test, few_lines_init_list_construct) {
@@ -155,7 +170,7 @@ TEST(matrix_test, equality) {
 
 /*
     
-    Блок тестирования метода нахождения определитля матрицы
+    Блок тестирования метода нахождения определителя матрицы
 
 */
 
@@ -224,6 +239,92 @@ INSTANTIATE_TEST_CASE_P(
                 { 4, 1, 2, 3 }
             },
             -160
+        )
+    )
+);
+
+/*
+
+    Блок тестирования методов умножения матриц
+
+*/
+
+using test_mx = learn::matrix<int>;
+using mult_test_type = std::tuple<test_mx, test_mx, test_mx>;
+class matrix_multiplication_test : public testing::TestWithParam<mult_test_type> {
+
+};
+
+TEST_P(matrix_multiplication_test, mult_math_test) {
+    // Arrange
+    auto [mx_1, mx_2, exp_mx] = GetParam();
+
+    // Act
+    auto ret_mx = learn::matrix_operations::math_multiplication(mx_1, mx_2);
+
+    // Arrange
+    ASSERT_EQ(ret_mx, exp_mx);
+}
+
+INSTANTIATE_TEST_CASE_P(
+    instantiate_mult_mx,
+    matrix_multiplication_test,
+    testing::Values(
+        std::tuple(
+            test_mx {
+                { 1, 2, 3 }
+            },
+            test_mx {
+                { 1 },
+                { 2 },
+                { 3 },
+            },
+            test_mx {
+                { 14 }
+            }
+        ),
+
+        std::tuple(
+            test_mx {
+                { 3 }
+            },
+            test_mx {
+                { 5 }
+            },
+            test_mx {
+                { 15 }
+            }
+        ),
+
+        std::tuple(
+            test_mx {
+                { 1, 2 },
+                { 3, 4 }
+            },
+            test_mx {
+                { 1, 2 },
+                { 3, 4 }
+            },
+            test_mx {
+                { 7, 10 },
+                { 15, 22 }
+            }
+        ),
+
+        std::tuple(
+            test_mx {
+                { 1, 2, 3 },
+                { 3, 2, 1 }
+            },
+            test_mx {
+                { 1, 2 },
+                { 0, 1 },
+                { 2, 1 } 
+            },
+            test_mx {
+                { 7, 7 },
+                { 5, 9 }
+            }
         )
     )
 );

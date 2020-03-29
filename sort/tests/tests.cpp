@@ -5,6 +5,7 @@
 #include "insertion_sort.hpp"
 #include "bubble_sort.hpp"
 #include "selection_sort.hpp"
+#include "merge_sort.hpp"
 
 using func_sort = std::function<void(int *, size_t, learn::sort_order)>;
 
@@ -50,7 +51,8 @@ INSTANTIATE_TEST_CASE_P(
     testing::Values(
         FUNC_SORT_PAIR("insertion",     learn::insertion_sort<int>),
         FUNC_SORT_PAIR("bubble",        learn::bubble_sort<int>),
-        FUNC_SORT_PAIR("selection",     learn::selection_sort<int>)
+        FUNC_SORT_PAIR("selection",     learn::selection_sort<int>),
+        FUNC_SORT_PAIR("merge",         learn::merge_sort<int>)
     )
 );
 

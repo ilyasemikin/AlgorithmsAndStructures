@@ -37,7 +37,7 @@ namespace learn {
     template <typename T>
     void merge_sort(T *array, size_t begin, size_t end, const compare_func<T> &cmp) {
         if (begin < end) {
-            size_t middle = (begin + end) / 2;
+            size_t middle = begin + (end - begin) / 2;
             merge_sort(array, begin, middle, cmp);
             merge_sort(array, middle + 1, end, cmp);
             merge(array, begin, middle, end, cmp);

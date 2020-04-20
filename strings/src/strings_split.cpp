@@ -4,11 +4,11 @@
 #include "string_split.hpp"
 
 namespace learn {
-    std::vector<std::string> split_into_words(const std::string &input) {
+    std::vector<std::string> split_into_words(const std::string &input, char delim) {
         std::vector<std::string> ret;
         
-        auto first_not_delim = [](char c) {
-            return c != ' ';
+        auto first_not_delim = [&delim](char c) {
+            return c != delim;
         };
 
         auto begin_it = std::find_if(input.begin(), input.end(), first_not_delim);

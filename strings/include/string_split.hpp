@@ -5,5 +5,5 @@
 #include <vector>
 
 namespace learn {
-    std::vector<std::string> split_into_words(const std::string &input);
+    std::vector<std::string> split_into_words(const std::string &input, char delim = ' ');
 }

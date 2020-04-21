@@ -8,7 +8,9 @@ set(
 set(
 	sources
 	src/main.cpp
-	src/strings_split.cpp
+	src/string_split.cpp
+	src/prefix.cpp
+	src/string_find.cpp
 )
 
 project(${pr_name} LANGUAGES CXX C)

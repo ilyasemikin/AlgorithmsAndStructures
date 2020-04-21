@@ -15,7 +15,9 @@ include_directories(
 add_executable(
 	test_task
 	tests.cpp
-	../src/strings_split.cpp
+	../src/string_split.cpp
+	../src/prefix.cpp
+	../src/string_find.cpp
 )
 target_link_libraries(
 	test_task

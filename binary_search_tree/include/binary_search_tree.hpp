@@ -35,6 +35,14 @@ namespace learn {
 
             class iterator;
 
+            iterator begin() const {
+                return iterator(head, true);
+            }
+
+            iterator end() const {
+                return iterator(nullptr);
+            }
+
             iterator insert(const T &value) {
                 node_ptr p = head;
                 node_ptr last_p = p;
@@ -47,15 +55,13 @@ namespace learn {
                 }
 
                 p = std::make_shared<binary_search_tree_node<T>>(value);
+                p->parent = last_p;
                 if (!head)
                     head = p;
                 else if (p->value < last_p->value)
                     last_p->left = p;
                 else
                     last_p->right = p;
-                
-                if (p != head)
-                    p->parent = last_p;
 
                 count++;
                 return iterator(p);
@@ -71,7 +77,7 @@ namespace learn {
                 return iterator(node);
             }
 
-            const T& min() const {
+            const T& min_value() const {
                 if (!head)
                     throw;
 
@@ -81,7 +87,7 @@ namespace learn {
                 return node->value;
             }
 
-            const T& max() const {
+            const T& max_value() const {
                 if (!head)
                     throw;
 
@@ -122,10 +128,8 @@ namespace learn {
         protected:
             using node_ptr = typename binary_search_tree_node<T>::node_ptr;
         public:
-            explicit iterator(const node_ptr &_node) :
-                node(_node)
-            {
-
+            explicit iterator(const node_ptr &_node, bool from_min = false) {
+                node = _node && from_min ? min(_node) : _node;
             }
 
             iterator operator++() {
@@ -154,7 +158,44 @@ namespace learn {
             node_ptr node;
 
             void next() {
-                node = nullptr;
+                if (node)
+                    node = successor(node);
+            }
+
+            node_ptr successor(node_ptr node) {
+                if (node->right)
+                    return min(node->right);
+                
+                node_ptr y = node->parent;
+                while (y && node == y->right) {
+                    node = y;
+                    y = y->parent;
+                }
+                return y;
+            }
+
+            node_ptr predecessor(node_ptr node) {
+                if (node->left)
+                    return max(node->left);
+
+                node_ptr y = node->parent;
+                while (y && node == y->left) {
+                    node = y;
+                    y = y->left;
+                }
+                return y;
+            }
+
+            node_ptr min(node_ptr node) {
+                while (node->left)
+                    node = node->left;
+                return node;
+            }
+
+            node_ptr max(node_ptr node) {
+                while (node->right)
+                    node = node->right;
+                return node;
             }
 
             friend class binary_search_tree<T>;

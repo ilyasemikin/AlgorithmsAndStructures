@@ -2,6 +2,8 @@
 
 #include "binary_search_tree.hpp"
 
+#include <vector>
+
 int main() {
     learn::binary_search_tree<int> tree;
 
@@ -11,10 +13,7 @@ int main() {
     tree.insert(6);
     tree.insert(10);
 
-    auto it = tree.begin();
-
-    for (const auto &item : tree)
-        std::cout << item << std::endl;
+    auto it = tree.find(5);
 
     return 0;
 }

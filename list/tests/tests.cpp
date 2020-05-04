@@ -23,7 +23,7 @@ void check_lists_eq(learn::list<T> *first, learn::list<T> *second) {
 	ASSERT_EQ(first->count(), second->count());
 
 	for (size_t i = 0; i < first->count(); i++)
-		ASSERT_EQ(first->at(i), second->at(i));
+		ASSERT_EQ(first->get_at(i), second->get_at(i));
 }
 
 TYPED_TEST_P(list_test, empty_on_startup) {
@@ -231,7 +231,7 @@ TYPED_TEST_P(list_test, item_at_correct_position) {
 	// Assert
 	ASSERT_EQ(list.count(), items.size());
 	for (size_t i = 0; i < items.size(); i++)
-		EXPECT_EQ(items[i], list.at(i));
+		EXPECT_EQ(items[i], list.get_at(i));
 }
 
 TYPED_TEST_P(list_test, item_at_incorrect_position) {
@@ -242,7 +242,7 @@ TYPED_TEST_P(list_test, item_at_incorrect_position) {
 	// nothing
 	
 	// Assert
-	ASSERT_THROW(list.at(2), std::logic_error);
+	ASSERT_THROW(list.get_at(2), std::logic_error);
 }
 
 REGISTER_TYPED_TEST_CASE_P(
@@ -274,6 +274,92 @@ using list_types = testing::Types<
 >;
 
 INSTANTIATE_TYPED_TEST_CASE_P(list_instantiation, list_test, list_types);
+
+TEST(doubly_linked_list, iterator_begin_test) {
+	// Arrange
+	learn::doubly_linked_list<int> list { 1, 3, 5, 2 };
+	std::vector<int> expected { 1, 3, 5, 2 };
+	std::vector<int> values;
+
+	// Act
+	std::copy(list.begin(), list.end(), std::back_inserter(values));
+
+	// Assert
+	ASSERT_EQ(values, expected);
+}
+
+TEST(doubly_linked_list, const_iterator_begin_test) {
+	// Arrange
+	const learn::doubly_linked_list<int> list { 1, 3, 5, 2 };
+	std::vector<int> expected { 1, 3, 5, 2 };
+	std::vector<int> values;
+
+	// Act
+	std::copy(list.begin(), list.end(), std::back_inserter(values));
+	
+	// Assert
+	ASSERT_EQ(values, expected);
+}
+
+TEST(doubly_linked_list, insert_it_begin) {
+	// Arrange
+	learn::doubly_linked_list<int> list { 1, 3, 5, 2 };
+	std::vector<int> expected { 0, 1, 3, 5, 2 };
+	std::vector<int> values;
+
+	// Act
+	list.insert(list.begin(), 0);
+	std::copy(list.begin(), list.end(), std::back_inserter(values));
+
+	// Assert
+	ASSERT_EQ(values, expected);
+}
+
+TEST(doubly_linked_list, insert_it_end) {
+	// Arrange
+	learn::doubly_linked_list<int> list { 1, 3, 5, 2 };
+	std::vector<int> expected { 1, 3, 5, 2, 0 };
+	std::vector<int> values;
+
+	// Act
+	list.insert(list.end(), 0);
+	std::copy(list.begin(), list.end(), std::back_inserter(values));
+
+	// Assert
+	ASSERT_EQ(values, expected);
+}
+
+TEST(doubly_linked_list, insert_it_middle) {
+	// Arrange
+	learn::doubly_linked_list<int> list { 1, 3, 5, 2 };
+	std::vector<int> expected { 1, 3, 0, 5, 2 };
+	std::vector<int> values;
+
+	// Act
+	auto it = list.begin();
+	it++;
+	it++;
+	list.insert(it, 0);
+	std::copy(list.begin(), list.end(), std::back_inserter(values));
+
+	// Assert
+	ASSERT_EQ(values, expected);
+}
+
+TEST(doubly_linked_list, at_function) {
+	// Arrange
+	learn::doubly_linked_list<int> list { 1, 3, 5, 2 };
+	std::vector expected{ 1, 3, 5, 2 };
+
+	// Act
+	// nothing
+	
+	// Assert
+	ASSERT_EQ(list.count(), expected.size());
+	for (size_t i = 0; i < expected.size(); i++)
+		ASSERT_EQ(*list.at(i), expected[i]);
+	ASSERT_THROW(list.at(4), std::logic_error);
+}
 
 int main(int argc, char **argv) {
 	testing::InitGoogleTest(&argc, argv);

@@ -36,7 +36,7 @@ namespace learn {
 
             virtual void insert(size_t, const T &) = 0;
 
-            virtual T at(size_t) const = 0;
+            virtual T get_at(size_t) const = 0;
 
             virtual void reverse() = 0;
 

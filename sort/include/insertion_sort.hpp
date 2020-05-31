@@ -2,29 +2,20 @@
 
 #include <limits>
 #include <functional>
-#include "sort_method.hpp"
+
+#include <iostream>
 
 namespace learn {
-    template <typename T>
-    void insertion_sort(T *array, size_t size, compare_func<T> cmp) {
-        size_t j;
-        size_t max_value = std::numeric_limits<size_t>::max();
-        for (size_t i = 1; i < size; i++) {
-            auto key = array[i];
-            j = i - 1;
-            while (j != max_value && cmp(array[j], key) == comparsion_result::more) {
-                array[j + 1] = array[j];
-                j--;
-            }
-            array[j + 1] = key;
-        }
+    template <typename RandomIt, typename Compare>
+    void insertion_sort(RandomIt begin, RandomIt end, Compare comp) {
+        // https://stackoverflow.com/questions/18453945/c-generic-insertion-sort
+        // Действительно интересный вариант
+        for (auto it = begin; it != end; ++it)
+            std::rotate(std::upper_bound(begin, it, *it, comp), it, std::next(it));
     }
 
-    template <typename T>
-    void insertion_sort(T *array, size_t size, sort_order order) {
-        if (order == sort_order::ascending)
-            insertion_sort(array, size, &compare_for_ascending<int>);
-        else
-            insertion_sort(array, size, &compare_for_descending<int>);
+    template <typename RandomIt>
+    void insertion_sort(RandomIt begin, RandomIt end) {
+        insertion_sort(begin, end, [](const auto &x, const auto &y) { return x < y; });
     }
 }

@@ -19,6 +19,7 @@ add_executable(
 target_link_libraries(
 	test_task
 	${GTEST_LIBRARIES}
+	${CMAKE_THREAD_LIBS_INIT}
 )
 
 enable_testing()

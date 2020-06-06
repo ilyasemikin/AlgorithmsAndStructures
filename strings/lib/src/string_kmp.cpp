@@ -1,10 +1,11 @@
-#include "string_find.hpp"
+#include "string_find_substr.hpp"
 #include "prefix.hpp"
+using namespace std;
 
-namespace learn {
-    size_t find_substr(std::string_view str, std::string_view substr) {
+namespace learn::find_substr {
+    size_t KMP(string_view str, string_view substr) {
         if (str.empty() || substr.empty())
-            return std::string_view::npos;
+            return not_found;
 
         size_t i = 0;
         size_t i_sub = 0;
@@ -13,7 +14,7 @@ namespace learn {
             if (i_sub == substr.size())
                 return i - substr.size();
             if (i == str.size())
-                return std::string_view::npos;
+                return not_found;
 
             if (str[i] == substr[i_sub]) {
                 i++;

@@ -12,16 +12,21 @@ include_directories(
 	${GTEST_INCLUDE_DIRS}	
 )
 
+set(
+	SOURCES
+	src/main.cpp
+)
+
+include_directories(include)
 add_executable(
-	test_task
-	tests.cpp
-	../src/string_split.cpp
-	../src/prefix.cpp
-	../src/string_find.cpp
+	test_task	
+	${SOURCES}
 )
 target_link_libraries(
 	test_task
 	${GTEST_LIBRARIES}
+	strings_processing
+	pthread
 )
 
 enable_testing()

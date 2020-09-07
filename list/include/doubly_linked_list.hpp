@@ -262,6 +262,17 @@ namespace learn {
                 return *this;
             }
 
+            iterator operator--() {
+                auto ret = *this;
+                move_to_prev();
+                return ret;
+            }
+
+            iterator operator--(int) {
+                move_to_prev();
+                return *this;
+            }
+
             T& operator*() {
                 return ptr->data;
             }
@@ -281,6 +292,11 @@ namespace learn {
             using pointer_t = typename doubly_linked_list<T>::pointer_t;
 
             pointer_t ptr;
+
+            void move_to_prev() {
+                if (ptr != nullptr)
+                    ptr = ptr->prev;
+            }
 
             void move_to_next() {
                 if (ptr != nullptr)
